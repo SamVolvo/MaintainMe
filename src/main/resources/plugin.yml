@@ -1,0 +1,8 @@
+name: MaintainMe
+version: '1.0-SNAPSHOT'
+main: com.samvolvo.maintainMe.MaintainMe
+api-version: '1.18'
+prefix: { MaintainMe }
+authors: [ SamVolvo ]
+description: Seamlessly manage server maintenance with ease.
+website: https://samvolvo.com
