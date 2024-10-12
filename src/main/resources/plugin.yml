@@ -6,3 +6,11 @@ prefix: { MaintainMe }
 authors: [ SamVolvo ]
 description: Seamlessly manage server maintenance with ease.
 website: https://samvolvo.com
+commands:
+  maintenance:
+    description: turn on/off maintenance mode
+
+permissions:
+  maintainme.maintenance:
+    description: Can use the /maintenance command
+    default: false
