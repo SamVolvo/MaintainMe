@@ -1,7 +1,9 @@
 package com.samvolvo.maintainMe.listeners;
 
 import com.samvolvo.maintainMe.MaintainMe;
+import com.samvolvo.maintainMe.methods.KickMethod;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -16,13 +18,18 @@ public class PlayerJoinListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         if (plugin.isMaintenanceMode() && !event.getPlayer().hasPermission("maintainme.join")){
-            event.getPlayer().kickPlayer(ChatColor.translateAlternateColorCodes('&', "" +
-                            "&a&lMaintainMe" +
-                    "\n" +
-                    "\n" +
-                    "&bWe are currently under maintenance.\n" +
-                    "&dWe will be back soon!"
-            ));
+            plugin.getKickMethod().kick(event.getPlayer());
+        }
+    }
+
+    @EventHandler
+    public void onStaffJoin(PlayerJoinEvent event){
+        Player player = e.getPlayer();
+        if (player.isOp() || player.hasPermission("prefixpro.version")){
+            String message = plugin.getUpdateChecker().generateUpdateMessageColored(plugin.getDescription().getVersion());
+            if (message != null || !message.isEmpty()){
+                player.sendMessage(message);
+            }
         }
     }
 }

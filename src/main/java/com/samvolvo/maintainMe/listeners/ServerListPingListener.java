@@ -18,10 +18,28 @@ public class ServerListPingListener implements Listener {
         plugin.getSamVolvoLogger().debug("Listener triggered. Mode is " + maintenanceMode);
         if (maintenanceMode){
             plugin.getSamVolvoLogger().debug("maintenanceMode is on.");
-            event.setMotd(plugin.getMotdTools().getMOTD("§aServer is in maintenance mode.", "§bPlease check back later!"));
+            if (plugin.getConfig.getBoolean("motd.maintenance.centered")){
+                event.setMotd(plugin.getMotdTools().getMOTD(plugin.getConfig.getString("motd.maintenance.line1"), plugin.getConfig.getString("motd.maintenance.line2")));
+            }else{
+                event.setMotd(plugin.getConfig.getString("motd.maintenance.line1")+ "\n" + plugin.getConfig.getString("motd.maintenance.line2"));
+            }
+            event.setMaxPlayers(0);
         }else{
             plugin.getSamVolvoLogger().debug("maintenanceMode is off.");
-            event.setMotd(plugin.getMotdTools().getMOTD("§eServer is online", "§dJoin now!"));
+            if (plugin.getConfig.getBoolean("motd.normal.centered")){
+                if (plugin.getConfig.getString("motd.normal.line1").isEmpty() && plugin.getConfig.getString("motd.normal.line2").isEmpty()){
+                    event.setMotd(plugin.getServer().getMotd());
+                }else{
+                    event.setMotd(plugin.getMotdTools().getMOTD(plugin.getConfig.getString("motd.normal.line1"), plugin.getConfig.getString("motd.normal.line2")));
+                }
+            }else{
+                if (plugin.getConfig.getString("motd.normal.line1").isEmpty() && plugin.getConfig.getString("motd.normal.line2").isEmpty()){
+                    event.setMotd(plugin.getServer().getMotd());
+                }else{
+                    event.setMotd(plugin.getConfig.getString("motd.normal.line1") + "\n" + plugin.getConfig.getString("motd.normal.line2"));
+                }
+            }
+            event.setMaxPlayers(plugin.getServer().getMaxPlayers());
         }
     }
 }

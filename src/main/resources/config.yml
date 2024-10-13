@@ -1,4 +1,14 @@
 ## MaintainMe by SamVolvo
 ## Config version: 1.0
 
-prefix: "&e&lMaintain&b&lMe"
+prefix: "&a&l[Maintain&d&lMe]"
+
+motd:
+  normal:
+    line1: "&7A Minecraft Server"
+    line2: ""
+    centered: false
+  maintenanceMode:
+    line1: "&aServer is in maintenance mode."
+    line2: "&bPlease check back later!"
+    centered: true

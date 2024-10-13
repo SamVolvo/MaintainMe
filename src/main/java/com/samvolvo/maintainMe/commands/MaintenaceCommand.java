@@ -1,6 +1,9 @@
 package com.samvolvo.maintainMe.commands;
 
 import com.samvolvo.maintainMe.MaintainMe;
+import com.samvolvo.maintainMe.methods.KickMethod;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -19,12 +22,12 @@ public class MaintenaceCommand implements CommandExecutor {
             Player player = (Player) sender;
 
             if (!player.hasPermission("maintainme.maintenance")){
-                player.sendMessage("§cYou do not have the permission to use this command.");
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getConfig.getString("prefix") + "&cYou do not have the permission to use this command."));
                 return true;
             }
 
             if (args.length != 1){
-                player.sendMessage("§cUse /maintenance <on/off>");
+                player.sendMessage( ChatColor.translateAlternateColorCodes('&', plugin.getConfig.getString("prefix") + "&7: &cUse /maintenance <on/off>"));
                 return true;
             }
 
@@ -32,15 +35,19 @@ public class MaintenaceCommand implements CommandExecutor {
 
             switch (option.toLowerCase()){
                 case "on":
-                    plugin.setMaintenanceMode(true);
-                    player.sendMessage("§b§l[DEBUG]: §eMaintenance mode is now §aenabled.");
+                    plugin.getMaintenanceMethod().enableMaintenance();
                     break;
                 case "off":
-                    plugin.setMaintenanceMode(false);
-                    player.sendMessage("§b§l[DEBUG]: §eMaintenance mode is now §cdisabled.");
+                    plugin.getMaintenanceMethod().disableMaintenance();
+                    break;
+                case "reload":
+                    plugin.getSamVolvoLogger().loading("Reloading plugin!");
+                    plugin.loadConfig();
+                    plugin.getSamVolvoLogger().info("Reload Completed!");
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getConfig.getString("prefix") + "&7: &eReload completed!"));
                     break;
                 default:
-                    player.sendMessage("§cUse /maintenance <on/off>");
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getConfig.getString("prefix") + "&7: &cUse /maintenance <on/off>"));
                     break;
             }
             return true;
