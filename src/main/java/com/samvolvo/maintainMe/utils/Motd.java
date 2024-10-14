@@ -1,9 +1,10 @@
 package com.samvolvo.maintainMe.utils;
 
 import com.samvolvo.maintainMe.MaintainMe;
+import org.bukkit.ChatColor;
 
 public class Motd {
-    private MaintainMe plugin;
+    private final MaintainMe plugin;
 
     public Motd(MaintainMe plugin) {
         this.plugin = plugin;
@@ -14,7 +15,7 @@ public class Motd {
         if (line1.length() > maxLineLenght || line2.length() > maxLineLenght){
             throw new IllegalArgumentException("MOTD lines mus be within " + maxLineLenght + " characters.");
         }
-        String motd = "§e" + centerText(line1) + "\n§b" + centerText(line2);
+        String motd = ChatColor.translateAlternateColorCodes('&', centerText(line1) + "\n" + centerText(line2));
         return motd;
     }
 
@@ -25,6 +26,6 @@ public class Motd {
     }
 
     private int getEffectiveLength(String text){
-        return text.replaceAll("§c", "").length();
+        return text.replaceAll("&.", "").length();
     }
 }

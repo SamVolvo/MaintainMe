@@ -18,7 +18,7 @@ public class MaintenanceMethod {
             if (!onlinePlayer.hasPermission("maintainme.join")){
                 plugin.getKickMethod().kick(onlinePlayer);
             }else{
-                onlinePlayer.sendMessage(ChatColor.translateAlternateColorCodes('&',  plugin.getConfig.getString("prefix") + "&7: &eMaintenance mode is enabled!"));
+                onlinePlayer.sendMessage(ChatColor.translateAlternateColorCodes('&',  plugin.getConfig().getString("prefix") + "&7: &eMaintenance mode is enabled!"));
             }
         }
     }
@@ -26,7 +26,7 @@ public class MaintenanceMethod {
     public void disableMaintenance(){
         plugin.setMaintenanceMode(false);
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()){
-            onlinePlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getConfig.getString("prefix") + "&7: &eMaintenance mode is disabled!"));
+            onlinePlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("prefix") + "&7: &eMaintenance mode is disabled!"));
         }
     }
 

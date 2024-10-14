@@ -9,16 +9,27 @@ import com.samvolvo.maintainMe.methods.MaintenanceMethod;
 import com.samvolvo.maintainMe.utils.Logger;
 import com.samvolvo.maintainMe.utils.Motd;
 import com.samvolvo.maintainMe.utils.UpdateChecker;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public final class MaintainMe extends JavaPlugin {
     private boolean maintenanceMode;
+    private Timer maintenanceTimer;
+    private BukkitRunnable scheduledMaintenanceTask;
+
+
     // Tools
     private Motd motdTools;
     private UpdateChecker updateChecker;
@@ -30,18 +41,15 @@ public final class MaintainMe extends JavaPlugin {
     private File configFile;
     private FileConfiguration config;
 
-
     @Override
     public void onEnable() {
         logger = new Logger(this);
-
         logger.loading("Starting");
         maintenanceMode = false;
-
         saveDefaultConfig();
         loadConfig();
 
-        // register tools
+        // Register tools
         motdTools = new Motd(this);
         maintenanceMethod = new MaintenanceMethod(this);
         kickMethod = new KickMethod(this);
@@ -54,73 +62,155 @@ public final class MaintainMe extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ServerListPingListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
 
-        updateChecker = new UpdateChecker(this, "SamVolvo", "MaintainMe", "https://modrinth.com/project/maintiainme");
+        updateChecker = new UpdateChecker(this, "SamVolvo", "MaintainMe", "https://modrinth.com/project/maintainme");
         checkforupdates();
-
         logger.info("Succesfully loaded MaintainMe!");
     }
 
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+        if (scheduledMaintenanceTask != null) {
+            scheduledMaintenanceTask.cancel();
+            scheduledMaintenanceTask = null; // Voeg deze lijn toe om de variabele op null te zetten
+        }
         logger.loading("Shutting down!");
         logger.info("Goodbye");
     }
-    // getters
 
+
+    // Getters
     public boolean isMaintenanceMode() {
         return maintenanceMode;
     }
 
     /**
-     * @param what is it on or off?
+     * @param what do you want it to be on or off?
      */
     public void setMaintenanceMode(boolean what) {
-        logger.debug("maintenance mode set to " + what);
         maintenanceMode = what;
-
     }
 
-    public Logger getSamVolvoLogger(){
+    public Logger getSamVolvoLogger() {
         return logger;
     }
 
     public Motd getMotdTools() {
         return motdTools;
     }
-    public MaintenanceMethod getMaintenanceMethod(){
+
+    public MaintenanceMethod getMaintenanceMethod() {
         return maintenanceMethod;
     }
-    public FileConfiguration getConfig;
-    public KickMethod getKickMethod(){
+
+    public FileConfiguration getConfig() {
+        return config;
+    }
+
+    public KickMethod getKickMethod() {
         return kickMethod;
     }
-    public UpdateChecker getUpdateChecker(){
+
+    public UpdateChecker getUpdateChecker() {
         return updateChecker;
     }
 
+    public BukkitRunnable getScheduledMaintenanceTask() {
+        return scheduledMaintenanceTask;
+    }
+
     // UpdateChecker
-    private void checkforupdates(){
+    private void checkforupdates() {
         List<String> nameless = updateChecker.generateUpdateMessage(getDescription().getVersion());
-        if (!nameless.isEmpty()){
-            for (String message : nameless){
+        if (nameless == null) {
+            return;
+        }
+        if (!nameless.isEmpty()) {
+            for (String message : nameless) {
                 logger.warning(message);
             }
         }
     }
 
-    public void loadConfig(){
-        if (configFile == null){
+    public void loadConfig() {
+        if (configFile == null) {
             configFile = new File(getDataFolder(), "config.yml");
         }
         config = YamlConfiguration.loadConfiguration(configFile);
     }
 
-    public void saveConfig(){
-        try{
+    public void saveConfig() {
+        try {
             config.save(configFile);
-        }catch (IOException e){
+        } catch (IOException e) {
             logger.error("There was an error saving the config");
+        }
+    }
+
+    public void scheduleMaintenance(int minutes) {
+        if (scheduledMaintenanceTask != null) { // Voeg deze lijn toe
+            scheduledMaintenanceTask.cancel(); // Voeg deze lijn toe
+        } // Voeg deze lijn toe
+
+        scheduledMaintenanceTask = new BukkitRunnable() {
+            int timeleft = minutes * 60;
+
+            @Override
+            public void run() {
+                if (isMaintenanceMode()) {
+                    cancel();
+                }
+                if (timeleft <= 0) {
+                    maintenanceMethod.enableMaintenance();
+                    cancel();
+                    return;
+                }
+                String message = getMessage(timeleft);
+                if (!message.isEmpty()) {
+                    for (Player players : Bukkit.getOnlinePlayers()) {
+                        players.sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("prefix") + "&7: " + message));
+                        players.playSound(players.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0F, 1.0F);
+                    }
+                }
+                timeleft--;
+            }
+        };
+        scheduledMaintenanceTask.runTaskTimer(this, 0L, 20L);
+    }
+
+
+    /**
+     * @param timeLeft How many seconds are left?
+     * @return What message do you get when there is a specific amount of time left
+     */
+    private String getMessage(int timeLeft) {
+        if (timeLeft % 300 == 0 && timeLeft > 300) { // Every 5 minutes while above 5 minutes left.
+            return "&eMaintenance starting in " + (timeLeft / 60) + " minutes.";
+        } else if (timeLeft == 60) { // 1 minute left.
+            return "&eMaintenance starting in 1 minute.";
+        } else if (timeLeft <= 300 && timeLeft % 60 == 0) { // Every minute when less than 5 minutes left.
+            return "&eMaintenance starting in " + (timeLeft / 60) + " minutes.";
+        } else if (timeLeft == 30) { // Only when there are 30 seconds left.
+            return "&eMaintenance starting in 30 seconds.";
+        } else if (timeLeft <= 10) { // Every second under 10 seconds.
+            return "&eMaintenance starting in " + timeLeft + " seconds.";
+        }
+        return "";
+    }
+
+    public boolean startMaintenanceTimer(int minutes) {
+        if (scheduledMaintenanceTask != null) {
+            return false; // Timer is al bezig
+        }
+        scheduleMaintenance(minutes); // Start de maintenance timer
+        return true;
+    }
+
+
+    public void stopMaintenanceTimer() {
+        if (scheduledMaintenanceTask != null) {
+            scheduledMaintenanceTask.cancel();
+            scheduledMaintenanceTask = null; // Voeg deze lijn toe om de variabele op null te zetten
         }
     }
 }

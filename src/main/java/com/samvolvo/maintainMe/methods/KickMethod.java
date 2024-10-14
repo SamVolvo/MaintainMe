@@ -13,7 +13,7 @@ public class KickMethod {
 
     public void kick(Player player){
         player.kickPlayer(ChatColor.translateAlternateColorCodes('&', "" +
-                plugin.getConfig.getString("prefix") +
+                plugin.getConfig().getString("prefix") +
                 "\n" +
                 "\n" +
                 "&bWe are currently under maintenance.\n" +

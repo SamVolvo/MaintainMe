@@ -20,9 +20,16 @@ public class MaintenanceTabCompleter implements TabCompleter {
                 completions.add("on");
                 completions.add("off");
                 completions.add("reload");
+                completions.add("schedule");
+                completions.add("stop");
+            }
+
+            if (args.length == 2 && args[0].equalsIgnoreCase("reload")){
+                completions.add("plugin");
+                completions.add("config");
             }
         }
 
-        return List.of();
+        return completions;
     }
 }
