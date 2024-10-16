@@ -7,6 +7,7 @@ import com.samvolvo.maintainMe.listeners.ServerListPingListener;
 import com.samvolvo.maintainMe.methods.KickMethod;
 import com.samvolvo.maintainMe.methods.MaintenanceMethod;
 import com.samvolvo.maintainMe.utils.Logger;
+import com.samvolvo.maintainMe.utils.Metrics;
 import com.samvolvo.maintainMe.utils.Motd;
 import com.samvolvo.maintainMe.utils.UpdateChecker;
 import org.bukkit.Bukkit;
@@ -46,6 +47,9 @@ public final class MaintainMe extends JavaPlugin {
         logger = new Logger(this);
         logger.loading("Starting");
         maintenanceMode = false;
+
+        Metrics metrics = new Metrics(this, 23626);
+
         saveDefaultConfig();
         loadConfig();
 
@@ -64,7 +68,7 @@ public final class MaintainMe extends JavaPlugin {
 
         updateChecker = new UpdateChecker(this, "SamVolvo", "MaintainMe", "https://modrinth.com/project/maintainme");
         checkforupdates();
-        logger.info("Succesfully loaded MaintainMe!");
+        logger.succes("Succesfully loaded MaintainMe!");
     }
 
     @Override
@@ -75,7 +79,7 @@ public final class MaintainMe extends JavaPlugin {
             scheduledMaintenanceTask = null; // Voeg deze lijn toe om de variabele op null te zetten
         }
         logger.loading("Shutting down!");
-        logger.info("Goodbye");
+        logger.succes("Goodbye");
     }
 
 
@@ -129,6 +133,8 @@ public final class MaintainMe extends JavaPlugin {
             for (String message : nameless) {
                 logger.warning(message);
             }
+        }else{
+            logger.info("*** You are running the latest version of this plugin! ***");
         }
     }
 

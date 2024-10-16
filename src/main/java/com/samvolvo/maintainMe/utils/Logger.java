@@ -31,4 +31,8 @@ public class Logger {
     public void info(String message){
         Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&7[INFO] &7[" + plugin.getName() + "]: &r" + message));
     }
+
+    public void succes(String message){
+        Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&a[SUCCESS] &7[" + plugin.getName() + "]: &r" + message));
+    }
 }

@@ -15,22 +15,20 @@ import java.util.List;
 
 public class UpdateChecker {
     private final Plugin plugin;
-    private String gitHubUserName;
-    private String repoName;
-    private String downloadUrl;
+    private final String gitHubUserName;
+    private final String repoName;
+    private final String downloadUrl;
 
-    public UpdateChecker(Plugin plugin, String gitHubUserName, String repoName, String downloadUrl){
+    public UpdateChecker(Plugin plugin, String gitHubUserName, String repoName, String downloadUrl) {
         this.plugin = plugin;
         this.gitHubUserName = gitHubUserName;
         this.repoName = repoName;
         this.downloadUrl = downloadUrl;
     }
 
-    private final String RELEASES_URL = "https://api.github.com/repos/"+ gitHubUserName + "/" + repoName + "/releases";
-
     public List<String> generateUpdateMessage(String v) {
-        try{
-            String currentVersion = "V" + v;
+        try {
+            String currentVersion = "v" + v;
             int releasesBehind = getReleasesBehind(currentVersion);
             JsonArray releases = getAllReleases();
             String tagName = releases.get(0).getAsJsonObject().get("tag_name").getAsString();
@@ -38,15 +36,16 @@ public class UpdateChecker {
             if (releasesBehind > 0) {
                 message.add("*********************************************************************");
                 message.add(plugin.getName() + " is outdated!");
-                message.add("\"Latest version: " + tagName);
-                message.add("Your version: " +   plugin.getDescription().getVersion());
+                message.add("Latest version: " + tagName);
+                message.add("Your version: v" + plugin.getDescription().getVersion());
                 message.add(downloadUrl);
                 message.add("*********************************************************************");
-            }else{
+            } else {
                 return message;
             }
             return message;
-        }catch (Exception e){
+        } catch (Exception e) {
+            e.printStackTrace();
             return Collections.singletonList("Unable to connect to version Check!");
         }
     }
@@ -57,8 +56,7 @@ public class UpdateChecker {
         if (releasesBehind > 0) {
             return ("§cYou are §4" + releasesBehind + "§c release(s) behind!\n" +
                     "Download the newest release at " + downloadUrl);
-        }
-        else {
+        } else {
             return null;
         }
     }
@@ -82,8 +80,10 @@ public class UpdateChecker {
 
     private JsonArray getAllReleases() throws IOException {
         OkHttpClient client = new OkHttpClient();
+        String releasesUrl = "https://api.github.com/repos/" + gitHubUserName + "/" + repoName + "/releases";
         Request request = new Request.Builder()
-                .url(RELEASES_URL)
+                .url(releasesUrl)
+                .header("X-GitHub-Api-Version", "2022-11-28")
                 .build();
         try (Response response = client.newCall(request).execute()) {
             if (response.isSuccessful() && response.body() != null) {
@@ -94,5 +94,3 @@ public class UpdateChecker {
         }
     }
 }
-
-

@@ -13,6 +13,11 @@ public class MaintenanceMethod {
     }
 
     public void enableMaintenance(){
+        /// Stop the maintenanceTimer if running
+        if (plugin.getScheduledMaintenanceTask() != null){
+            plugin.stopMaintenanceTimer();
+        }
+        /// Turn on maintenance mode.
         plugin.setMaintenanceMode(true);
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()){
             if (!onlinePlayer.hasPermission("maintainme.join")){
@@ -24,6 +29,7 @@ public class MaintenanceMethod {
     }
 
     public void disableMaintenance(){
+        /// Disable maintenance mode
         plugin.setMaintenanceMode(false);
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()){
             onlinePlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("prefix") + "&7: &eMaintenance mode is disabled!"));
