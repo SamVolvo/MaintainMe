@@ -41,17 +41,28 @@ public final class MaintainMe extends JavaPlugin {
     // Config
     private File configFile;
     private FileConfiguration config;
+    private boolean isDebugOn;
 
     @Override
     public void onEnable() {
         logger = new Logger(this);
         logger.loading("Starting");
-        maintenanceMode = false;
+
 
         Metrics metrics = new Metrics(this, 23626);
 
         saveDefaultConfig();
         loadConfig();
+
+        maintenanceMode = config.getBoolean("settings.maintenanceOnStart");
+        if (isDebugOn){
+            if (maintenanceMode){
+                logger.debug("Server starts with Maintenance mode on!");
+            }else{
+                logger.debug("Server starts without Maintenance mode on!");
+            }
+
+        }
 
         // Register tools
         motdTools = new Motd(this);
@@ -67,6 +78,9 @@ public final class MaintainMe extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
 
         updateChecker = new UpdateChecker(this, "SamVolvo", "MaintainMe", "https://modrinth.com/project/maintainme");
+        if (isDebugOn){
+            logger.debug("Loading UpdateChecker!");
+        }
         checkforupdates();
         logger.succes("Succesfully loaded MaintainMe!");
     }
@@ -143,6 +157,7 @@ public final class MaintainMe extends JavaPlugin {
             configFile = new File(getDataFolder(), "config.yml");
         }
         config = YamlConfiguration.loadConfiguration(configFile);
+        isDebugOn = config.getBoolean("special.debugMode");
     }
 
     public void saveConfig() {
@@ -177,6 +192,7 @@ public final class MaintainMe extends JavaPlugin {
                         players.sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("prefix") + "&7: " + message));
                         players.playSound(players.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0F, 1.0F);
                     }
+                    logger.info(message);
                 }
                 timeleft--;
             }

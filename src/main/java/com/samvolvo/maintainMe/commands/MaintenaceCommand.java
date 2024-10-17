@@ -49,7 +49,10 @@ public class MaintenaceCommand implements CommandExecutor {
                     break;
                 }
                 plugin.getMaintenanceMethod().disableMaintenance();
-                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("prefix") + "&7: &eMaintenance mode disabled."));
+
+                if (sender instanceof ConsoleCommandSender){
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("prefix") + "&7: &eMaintenance mode disabled."));
+                }
                 break;
             case "reload":
                 if (args.length != 2) {
