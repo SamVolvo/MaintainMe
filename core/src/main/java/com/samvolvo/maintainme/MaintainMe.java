@@ -3,6 +3,7 @@ package com.samvolvo.maintainme;
 import com.samvolvo.maintainme.commands.MaintenanceCommand;
 import com.samvolvo.maintainme.commands.tabCompleters.MaintenanceTabCompleter;
 import com.samvolvo.maintainme.interfaces.NMSHandler;
+import com.samvolvo.maintainme.listeners.AbstractPlayerJoinListener;
 import com.samvolvo.maintainme.listeners.AbstractServerListPingListener;
 import com.samvolvo.maintainme.utils.Logger;
 import com.samvolvo.maintainme.utils.MOTD;
@@ -101,8 +102,8 @@ public class MaintainMe extends JavaPlugin {
             Class<? extends AbstractServerListPingListener> listenerClass = (Class<? extends AbstractServerListPingListener>) Class.forName(clazzName);
             AbstractServerListPingListener serverListPingListener = listenerClass.getConstructor(MaintainMe.class).newInstance(this);
             String className = "com.samvolvo.maintainme.nms_" + minecraftVersion.replace(".", "_") + ".PlayerJoinListener";
-            Class<? extends AbstractServerListPingListener> listener2Class = (Class<? extends AbstractServerListPingListener>) Class.forName(clazzName);
-            AbstractServerListPingListener PlayerJoinListener = listenerClass.getConstructor(MaintainMe.class).newInstance(this);
+            Class<? extends AbstractPlayerJoinListener> listener2Class = (Class<? extends AbstractPlayerJoinListener>) Class.forName(className);
+            AbstractPlayerJoinListener PlayerJoinListener = listener2Class.getConstructor(MaintainMe.class).newInstance(this);
             getServer().getPluginManager().registerEvents(serverListPingListener, this);
             getServer().getPluginManager().registerEvents(PlayerJoinListener, this);
         } catch (Exception e) {
