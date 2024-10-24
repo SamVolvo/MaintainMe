@@ -87,7 +87,8 @@ public class UpdateChecker {
                 .build();
         try (Response response = client.newCall(request).execute()) {
             if (response.isSuccessful() && response.body() != null) {
-                return JsonParser.parseString(response.body().string()).getAsJsonArray();
+                JsonParser parser = new JsonParser();
+                return parser.parse(response.body().string()).getAsJsonArray();
             } else {
                 return null;
             }

@@ -6,15 +6,16 @@
 
     <groupId>com.samvolvo</groupId>
     <artifactId>MaintainMe</artifactId>
-    <version>2.0-bèta</version>
+    <version>2.0</version>
     <packaging>pom</packaging>
 
     <modules>
         <module>core</module>
         <module>dist</module>
         <module>spigot-1.17</module>
-        <module>spigot-1.18</module>
         <module>spigot-1.17.1</module>
+        <module>spigot-1.18</module>
+        <module>spigot-1.18.1</module>
     </modules>
 
     <properties>

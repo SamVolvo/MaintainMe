@@ -9,8 +9,7 @@
         <version>2.0</version>
     </parent>
 
-    <artifactId>MaintainMe-spigot-1.17.1</artifactId>
-
+    <artifactId>MaintainMe-spigot-1.18.1</artifactId>
 
     <dependencies>
         <dependency>
@@ -21,8 +20,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot</artifactId>
-            <version>1.17.1-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
+            <version>1.18.1-R0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
