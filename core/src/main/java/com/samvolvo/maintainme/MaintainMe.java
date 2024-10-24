@@ -7,6 +7,7 @@ import com.samvolvo.maintainme.listeners.AbstractPlayerJoinListener;
 import com.samvolvo.maintainme.listeners.AbstractServerListPingListener;
 import com.samvolvo.maintainme.utils.Logger;
 import com.samvolvo.maintainme.utils.MOTD;
+import com.samvolvo.maintainme.utils.Metrics;
 import com.samvolvo.maintainme.utils.UpdateChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -45,6 +46,7 @@ public class MaintainMe extends JavaPlugin {
 
     @Override
     public void onEnable(){
+        Metrics metrics = new Metrics(this, 23626);
         SamVolvoLogger = new Logger(this);
         plugin = this;
         saveDefaultConfig();
