@@ -26,13 +26,16 @@ prefix: "&a[Maintain&dMe]"
 
 # motd supports color codes.
 motd:
+  enabled: true
   normal:
-    line1: "A Minecraft Server."
-    line2: ""
+    motd:
+      - "&eMaintain&dMe"
+      - "&aServer is online."
     centered: false
   maintenance:
-    line1: "&dMaintainMe"
-    line2: "&eWe are currently under maintenance!"
+    motd:
+      - "&eMaintain&dMe"
+      - "&aCurrently in &cmaintenance."
     centered: true
 
 settings:

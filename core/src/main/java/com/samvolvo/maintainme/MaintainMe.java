@@ -51,7 +51,7 @@ public class MaintainMe extends JavaPlugin {
         plugin = this;
         saveDefaultConfig();
         loadConfig();
-        SamVolvoLogger.loading("MaintainMe 2.0 bèta");
+        SamVolvoLogger.loading("MaintainMe " + getDescription().getVersion());
         nmsHandler = createNMSHandler();
         SamVolvoLogger.loading("Version Supported");
 
@@ -171,9 +171,9 @@ public class MaintainMe extends JavaPlugin {
             Class<? extends NMSHandler> clazz = (Class<? extends NMSHandler>) Class.forName(clazzName);
             return clazz.getConstructor().newInstance();
         } catch (ClassNotFoundException exception) {
-            throw new RuntimeException("Can't instantiate NMSHandlerImpl for version " + getMinecraftVersion() +
-                    " (class " + clazzName + " not found. This usually means that this Minecraft version is not " +
-                    "supported by this version of the plugin.)", exception);
+            getSamVolvoLogger().error(getMinecraftVersion() + " is not supported by MaintainMe");
+            onDisable();
+            return null;
         } catch (InvocationTargetException exception) {
             throw new RuntimeException("Can't instantiate NMSHandlerImpl for version " + getMinecraftVersion() +
                     " (constructor in class " + clazzName + " threw an exception)", exception);

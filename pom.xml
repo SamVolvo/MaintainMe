@@ -6,8 +6,15 @@
 
     <groupId>com.samvolvo</groupId>
     <artifactId>MaintainMe</artifactId>
-    <version>2.0</version>
+    <version>2.1</version>
     <packaging>pom</packaging>
+
+    <properties>
+        <maintainme.version>2.1</maintainme.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>16</maven.compiler.source>
+        <maven.compiler.target>16</maven.compiler.target>
+    </properties>
 
     <modules>
         <module>core</module>
@@ -33,12 +40,6 @@
         <module>spigot-1.21.1</module>
         <module>spigot-1.21.2</module>
     </modules>
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>16</maven.compiler.source>
-        <maven.compiler.target>16</maven.compiler.target>
-    </properties>
 
     <repositories>
         <repository>

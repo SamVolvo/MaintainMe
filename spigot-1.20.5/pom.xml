@@ -6,7 +6,8 @@
     <parent>
         <groupId>com.samvolvo</groupId>
         <artifactId>MaintainMe</artifactId>
-        <version>2.0</version>
+        <version>2.1</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>MaintainMe-spigot-1.20.5</artifactId>
@@ -15,7 +16,7 @@
         <dependency>
             <groupId>com.samvolvo</groupId>
             <artifactId>maintainme-core</artifactId>
-            <version>2.0</version>
+            <version>${maintainme.version}</version>
         </dependency>
         <dependency>
             <groupId>org.spigotmc</groupId>

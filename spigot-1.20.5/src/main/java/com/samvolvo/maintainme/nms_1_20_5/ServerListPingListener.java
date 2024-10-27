@@ -3,8 +3,12 @@ package com.samvolvo.maintainme.nms_1_20_5;
 import com.samvolvo.maintainme.MaintainMe;
 import com.samvolvo.maintainme.listeners.AbstractServerListPingListener;
 import com.samvolvo.maintainme.utils.MOTD;
+import org.bukkit.ChatColor;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.server.ServerListPingEvent;
+
+import java.util.List;
 
 public class ServerListPingListener extends AbstractServerListPingListener {
     private final MaintainMe plugin;
@@ -17,22 +21,42 @@ public class ServerListPingListener extends AbstractServerListPingListener {
 
     @EventHandler
     public void onServerListPing(ServerListPingEvent event){
-        String line1;
-        String line2;
+        if (!plugin.getConfig().getBoolean("motd.enabled")){
+            return;
+        }
+
+        if (getMotd(plugin.getConfig()) == null){
+            plugin.getSamVolvoLogger().error("No motd found!");
+            return;
+        }
+
+        List<String> motd = getMotd(plugin.getConfig());
+
+        String message = "";
+
+        for (String line : motd){
+            message += ChatColor.translateAlternateColorCodes('&', line + "\n");
+        }
+
+        event.setMotd(message);
+        setMaxPlayers(event);
+    }
+
+    private List<String> getMotd(FileConfiguration config){
+        List<String> motd = null;
         if (plugin.isMaintenanceMode()){
-            line1 = plugin.getConfig().getString("motd.maintenance.line1");
-            line2 = plugin.getConfig().getString("motd.maintenance.line2");
+            motd = config.getStringList("motd.maintenance.motd");
+        }else{
+            motd = config.getStringList("motd.normal.motd");
+        }
+        return motd;
+    }
+
+    private void setMaxPlayers(ServerListPingEvent event){
+        if (plugin.isMaintenanceMode()){
             event.setMaxPlayers(0);
         }else{
-            line1 = plugin.getConfig().getString("motd.normal.line1");
-            line2 = plugin.getConfig().getString("motd.normal.line2");
             event.setMaxPlayers(plugin.getServer().getMaxPlayers());
         }
-
-        if (line1 == null || line1.isEmpty()){
-            line1 = "A Minecraft Server";
-        }
-
-        event.setMotd(motdUtil.getMOTD(line1, line2));
     }
 }
